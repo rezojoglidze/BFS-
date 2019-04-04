@@ -1,0 +1,58 @@
+#include<iostream>
+#include<vector>
+#include<list>
+using namespace std;
+class Graph {
+	int v;
+	list<int>*adj;
+public:
+	Graph(int v);
+	void addedge(int x, int y);
+	void BFS(int s);
+};
+Graph::Graph(int v) {//კეთება v წვეროიანი გრაფი
+	this->v = v;
+	adj = new list<int>[v];
+}
+void Graph::addedge(int x, int y) {//adj-ის x-ურ ადგილას ვწერთ y-ს
+	adj[x].push_back(y);
+}
+void Graph::BFS(int s) {//s არის საწყისი წვერო
+	bool* visited = new bool[v];
+	int* d = new int[v];//d არის s-დან მანძილი მშობლამდე და p არის s-ის მშობელი
+	int* p = new int[v];
+	list<int>q;
+	for (int i = 0; i < v; i++) {//ამ for-ით ყველა წვეროს ვანიჭებთ false-ს და მანძილს მშობლამდე 
+  //ვეუბნებით, რომ არის 0, და ასევე მშოველი არ ყავს.
+		visited[i] = false;
+		d[i] = -1;
+		p[i] = -1;
+	}
+	visited[s] = true;
+	d[s] = 0;
+	p[s] = s;
+	q.push_back(s);
+	while (!q.empty()) {
+		s = q.front();//s-ს 
+		cout << s << "  " << d[s] << "  " << p[s] << endl;
+		q.pop_front();//ვშლი ელემენტს
+		list<int>::iterator i;
+		for (i = adj[s].begin(); i != adj[s].end(); i++) {
+			if (!visited[*i]) {
+				visited[*i] = true;
+				d[*i] = d[s] + 1;
+				p[*i] = s;
+				q.push_back(*i);
+			}
+			}
+		}
+	}
+int main() {
+	Graph g(5);
+	g.addedge(0, 1);
+	g.addedge(1, 2);
+	g.addedge(2, 1);
+	g.addedge(2, 3); 
+	g.addedge(4, 1);
+	g.BFS(4);
+}
